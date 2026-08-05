@@ -1,0 +1,122 @@
+.layout {
+  min-height: 100dvh;
+  background: var(--color-bg-app);
+  font-family: var(--font-family-base);
+}
+
+/* ================= HEADER ================= */
+
+.header-layout {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 80px;
+
+  padding: 0 var(--space-lg);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  
+
+
+
+ 
+
+  z-index: 1000;
+}
+
+.header-layout img {
+  height: 46px;
+  object-fit: contain;
+  border-radius: 50%;
+  box-shadow: var(--shadow-button);
+}
+
+/* ================= BOTÃO SINO ================= */
+
+.notificacao {
+  width: 46px;
+  height: 46px;
+
+  border: none;
+  outline: none;
+
+  border-radius: 50%;
+
+  background: var(--color-bg-soft);
+
+  color: var(--color-primary);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  transition: .25s;
+  box-shadow: var(--shadow-button);
+}
+
+.notificacao svg {
+  font-size: 1.4rem;
+}
+
+.notificacao:hover {
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+}
+
+/* ================= CONTEÚDO ================= */
+
+.layout-content {
+  padding-top: 100px;
+  padding-bottom: 120px;
+}
+
+/* ================= CARRINHO ================= */
+
+.carrinho {
+  position: fixed;
+
+  left: 50%;
+  bottom: 24px;
+
+  transform: translateX(-50%);
+
+  width: 68px;
+  height: 68px;
+
+  border: none;
+  outline: none;
+
+  border-radius: 50%;
+
+  background: var(--color-primary);
+
+  color: var(--color-text-on-primary);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: var(--shadow-button);
+
+  cursor: pointer;
+
+  z-index: 1100;
+
+  transition: .25s;
+}
+
+.carrinho svg {
+  font-size: 1.8rem;
+}
+
+.carrinho:hover {
+  background: var(--color-primary-dark);
+  transform: translateX(-50%) scale(1.08);
+}
