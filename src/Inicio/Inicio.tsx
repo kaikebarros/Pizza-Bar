@@ -1,10 +1,16 @@
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { FiPlus, FiSearch } from "react-icons/fi";
+import {
+  FiPlus,
+  FiSearch,
+  FiShoppingBag
+} from "react-icons/fi";
 import { LuCakeSlice, LuCupSoda, LuPackage, LuPizza } from "react-icons/lu";
 import pizzaCardUm from "../assets/pizza-card-1.png";
 import { db } from "../Layout/Services/Firebase";
 import "./Inicio.css";
+import Pedidos from "./Pedidos";
+
 function Inicio() {
   interface Produto {
     id: string;
@@ -20,6 +26,9 @@ function Inicio() {
   const [descricaoAberta, setDescricaoAberta] = useState<string | null>(null);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("todos");
   const [textoInput, setTextoInput] = useState("");
+  const [sacola, setSacola] = useState<Produto[]>([]);
+  const [sacolaAberta, setSacolaAberta] = useState(false);
+  const [addNaSacola, setAddNaSacola] = useState([])
   async function buscarProdutos(): Promise<void> {
     const produtosRef = collection(db, "produtos");
 
@@ -37,8 +46,25 @@ function Inicio() {
     buscarProdutos();
   }, []);
 
+  const addASacola = (produto: Produto) => {
+    const novaSacola = [...sacola];
+    novaSacola.push(produto);
+
+    setSacola(novaSacola);
+  };
+const fecharSacola=()=>{
+  setSacolaAberta(false)
+}
+
+
+
+
+
   return (
     <>
+      {sacolaAberta && <Pedidos fecharSacola={fecharSacola}
+      sacola={sacola}/>}
+
       <div className="inicio">
         <div className="input">
           <label htmlFor="buscar" className="buscar"></label>
@@ -47,8 +73,8 @@ function Inicio() {
             type="search"
             id="buscar"
             placeholder="O que você vai pedir hoje?"
-            onChange={(evento)=>{
-              setTextoInput(evento.target.value)
+            onChange={(evento) => {
+              setTextoInput(evento.target.value);
             }}
           />
 
@@ -72,7 +98,11 @@ function Inicio() {
               className="tradicionais"
               onClick={() => {
                 {
-                  setCategoriaSelecionada(categoriaSelecionada ==="tradicionais"?"todos": "tradicionais" );
+                  setCategoriaSelecionada(
+                    categoriaSelecionada === "tradicionais"
+                      ? "todos"
+                      : "tradicionais",
+                  );
                 }
               }}
             >
@@ -83,7 +113,9 @@ function Inicio() {
               className="combos"
               onClick={() => {
                 {
-                  setCategoriaSelecionada(categoriaSelecionada ==="combos"? "todos":"combos");
+                  setCategoriaSelecionada(
+                    categoriaSelecionada === "combos" ? "todos" : "combos",
+                  );
                 }
               }}
             >
@@ -94,7 +126,9 @@ function Inicio() {
               className="bebidas"
               onClick={() => {
                 {
-                  setCategoriaSelecionada(categoriaSelecionada ==="bebidas"? "todos":"bebidas");
+                  setCategoriaSelecionada(
+                    categoriaSelecionada === "bebidas" ? "todos" : "bebidas",
+                  );
                 }
               }}
             >
@@ -105,7 +139,11 @@ function Inicio() {
               className="sobremesa"
               onClick={() => {
                 {
-                  setCategoriaSelecionada(categoriaSelecionada ==="sobremesa"?"todos":"sobremesa");
+                  setCategoriaSelecionada(
+                    categoriaSelecionada === "sobremesa"
+                      ? "todos"
+                      : "sobremesa",
+                  );
                 }
               }}
             >
@@ -122,20 +160,18 @@ function Inicio() {
             {}
 
             {produtos
-              .filter((produto) => categoriaSelecionada === "todos" ? true :produto.categoria ===categoriaSelecionada
-            
-            
-            
-            
-            )
+              .filter((produto) =>
+                categoriaSelecionada === "todos"
+                  ? true
+                  : produto.categoria === categoriaSelecionada,
+              )
 
+              .filter((produto) =>
+                produto.nome
+                  .toLocaleLowerCase()
+                  .includes(textoInput.toLocaleLowerCase()),
+              )
 
-            .filter((produto)=> produto.nome.toLocaleLowerCase().includes( textoInput.toLocaleLowerCase()) 
-
-
-            )
-
-         
               .map((produto) => (
                 <div className="card-produto" key={produto.id}>
                   <img src={pizzaCardUm} alt="" />
@@ -160,12 +196,28 @@ function Inicio() {
                       })}
                     </p>
                   </div>
-                  <button className="btn-add">
+                  <button
+                    className="btn-add"
+                    onClick={() => {
+                      addASacola(produto);
+                    }}
+                  >
                     {" "}
                     <FiPlus />
                   </button>
                 </div>
               ))}
+          </div>
+          <div className="btn-sacola">
+            <button
+              onClick={() => {
+                setSacolaAberta(true);
+              }}
+            >
+              <FiShoppingBag />
+            </button>
+
+            <span>{sacola.length}</span>
           </div>
         </section>
       </div>
