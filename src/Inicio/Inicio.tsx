@@ -1,10 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import {
-  FiPlus,
-  FiSearch,
-  FiShoppingBag
-} from "react-icons/fi";
+import { FiPlus, FiSearch, FiShoppingBag } from "react-icons/fi";
 import { LuCakeSlice, LuCupSoda, LuPackage, LuPizza } from "react-icons/lu";
 import pizzaCardUm from "../assets/pizza-card-1.png";
 import { db } from "../Layout/Services/Firebase";
@@ -12,6 +8,7 @@ import "./Inicio.css";
 import Pedidos from "./Pedidos";
 
 function Inicio() {
+  
   interface Produto {
     id: string;
     nome: string;
@@ -21,14 +18,17 @@ function Inicio() {
     descricao: string;
     resumo: string;
   }
-
+  interface ItemSacola {
+    produto: Produto;
+    quantidade: number;
+  }
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [descricaoAberta, setDescricaoAberta] = useState<string | null>(null);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("todos");
   const [textoInput, setTextoInput] = useState("");
-  const [sacola, setSacola] = useState<Produto[]>([]);
+  const [sacola, setSacola] = useState<ItemSacola[]>([]);
   const [sacolaAberta, setSacolaAberta] = useState(false);
-  const [addNaSacola, setAddNaSacola] = useState([])
+
   async function buscarProdutos(): Promise<void> {
     const produtosRef = collection(db, "produtos");
 
@@ -48,22 +48,75 @@ function Inicio() {
 
   const addASacola = (produto: Produto) => {
     const novaSacola = [...sacola];
-    novaSacola.push(produto);
+
+    const resultado = novaSacola.find((item) => item.produto.id === produto.id);
+
+    if (resultado) {
+      resultado.quantidade += 1;
+    } else {
+      novaSacola.push({
+        produto: produto,
+        quantidade: 1,
+      });
+    }
 
     setSacola(novaSacola);
   };
-const fecharSacola=()=>{
-  setSacolaAberta(false)
-}
+  const diminuirQtd = (produto: Produto) => {
+    const novaSacola = [...sacola];
 
+    const resultado = novaSacola.find((item) => item.produto.id === produto.id);
 
+    if (resultado) {
+      resultado.quantidade -= 1;
+    }
+    if (resultado?.quantidade === 0) {
+      novaSacola.splice(novaSacola.indexOf(resultado), 1);
+    }
+    setSacola(novaSacola);
+  };
+  const removerPedido = (produto: Produto) => {
+    const novaSacola = [...sacola];
 
+    const resultado = novaSacola.find((item) => item.produto.id === produto.id);
 
+    if (resultado) {
+      novaSacola.splice(novaSacola.indexOf(resultado), 1);
+    }
+    setSacola(novaSacola);
+  };
+  const limparSacola = () => {
+    setSacola([]);
+  };
+
+  const fecharSacola = () => {
+    setSacolaAberta(false);
+  };
+
+  const itemNaSacola = (produto: Produto) => {
+    return sacola.find((item) => {
+      return item.produto.id === produto.id;
+    });
+  };
+
+  const calcularPreco = (produto: ItemSacola) => {
+    const subtotal = produto.produto.preco * produto.quantidade;
+    return subtotal;
+  };
 
   return (
     <>
-      {sacolaAberta && <Pedidos fecharSacola={fecharSacola}
-      sacola={sacola}/>}
+      {sacolaAberta && (
+        <Pedidos
+          fecharSacola={fecharSacola}
+          sacola={sacola}
+          diminuirQtd={diminuirQtd}
+          addASacola={addASacola}
+          removerPedido={removerPedido}
+          limparSacola={limparSacola}
+          calcularPreco={calcularPreco}
+        />
+      )}
 
       <div className="inicio">
         <div className="input">
@@ -196,6 +249,7 @@ const fecharSacola=()=>{
                       })}
                     </p>
                   </div>
+
                   <button
                     className="btn-add"
                     onClick={() => {
@@ -204,6 +258,9 @@ const fecharSacola=()=>{
                   >
                     {" "}
                     <FiPlus />
+                    <span className="btn-add-span">
+                      {itemNaSacola(produto)?.quantidade}
+                    </span>
                   </button>
                 </div>
               ))}
@@ -217,7 +274,7 @@ const fecharSacola=()=>{
               <FiShoppingBag />
             </button>
 
-            <span>{sacola.length}</span>
+            <span>{sacola.length >= 1 ? sacola.length : ""}</span>
           </div>
         </section>
       </div>

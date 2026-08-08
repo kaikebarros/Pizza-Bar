@@ -1,5 +1,6 @@
 import { FiArrowLeft } from "react-icons/fi";
 import "./Pedidos.css";
+import { useState } from "react";
 interface Produto {
   id: string;
   nome: string;
@@ -9,12 +10,37 @@ interface Produto {
   descricao: string;
   resumo: string;
 }
+interface ItemSacola {
+  produto: Produto;
+  quantidade: number;
+}
 interface PedidosProps {
   fecharSacola: () => void;
-  sacola: Produto[];
+  sacola: ItemSacola[];
+  diminuirQtd: (produto: Produto) => void;
+  addASacola: (produto: Produto) => void;
+  removerPedido: (produto: Produto) => void;
+  limparSacola:()=> void;
+ calcularPreco:(item:ItemSacola)=> number;
 }
 
-function Pedidos({ fecharSacola, sacola }: PedidosProps) {
+function Pedidos({
+  fecharSacola,
+  sacola,
+  diminuirQtd,
+  addASacola,
+  removerPedido,
+  limparSacola,
+ calcularPreco
+}: PedidosProps) {
+
+const [inputObs, setInputObs] = useState("")
+
+const total = sacola.reduce((acumulador, item)=>{
+  return acumulador + calcularPreco(item)
+}, 0)
+
+
   return (
     <>
       <div className="pedidos-overlay">
@@ -26,56 +52,120 @@ function Pedidos({ fecharSacola, sacola }: PedidosProps) {
 
             <h1>Sacola</h1>
 
-            <button className="btn-limpar">Limpar</button>
+            <button className="btn-limpar"
+            onClick={
+              limparSacola
+            }
+            >Limpar</button>
           </header>
 
           <section>
-            <h2>Itens adicionados</h2>
-            {sacola.map((produto) => (
-              <div className="itens" key={produto.id}>
+           {sacola.length  >=1 && (<h2>Itens adicionados</h2>)}
+
+           
+            
+         
+            {sacola
+            
+            
+            
+            
+            .map((item) => {
+              const subtotal = calcularPreco(item)
+              return(
+              <div className="itens" key={item.produto.id}>
                 <div className="item">
                   <img src="https://placehold.co/100x100" alt="Pizza" />
 
                   <div className="info">
-                    <h3>{produto.nome}</h3>
+                    <h3>{item.produto.nome}</h3>
 
-                    <p>{produto.descricao}</p>
+                    <p>{item.produto.descricao}</p>
 
-                    <span className="preco">{produto.preco}</span>
+                    <span className="preco">{subtotal.toLocaleString("pt-Br",{
+                  style:"currency",
+                  currency:"BRL"
+                })}</span>
 
                     <div className="add-remover">
-                      <button>🗑️</button>
+                      <button
+                        onClick={() => {
+                          removerPedido(item.produto);
+                        }}
+                      >
+                        🗑️
+                      </button>
 
-                      <p className="qtd">1</p>
+                      <p className="qtd">{item.quantidade}</p>
 
-                      <button>+</button>
-                      <button>-</button>
+                      <button
+                        onClick={() => {
+                          addASacola(item.produto);
+                        }}
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => {
+                          diminuirQtd(item.produto);
+                        }}
+                      >
+                        -
+                      </button>
+                         <label htmlFor="observacao">Observação</label>
+                    <input type="text" 
+                    id="observacao"
+                    placeholder="Ex: Sem cebola"
+                    onChange={(evento)=>{
+                      setInputObs(evento.target.value)
+                    }}/>
                     </div>
+                 
                   </div>
                 </div>
 
-                <button className="mais-itens">+ Adicionar mais itens</button>
+                <button className="mais-itens"
+                onClick={()=>{
+                  fecharSacola()
+                }}>+ Adicionar itens</button>
               </div>
-            ))}
+              
+            )})}
+            
+          
+            {sacola.length === 0 && (
+              <button className="mais-itens"
+              onClick={()=>{
+                  fecharSacola()
 
-            <div className="resumo-valores">
+              }}
+              >
+
+              Adicionar itens
+
+              </button>
+
+
+            ) }
+
+          
+
+           {sacola.length >=1 &&
+           ( <div className="resumo-valores">
               <h2>Resumo do pedido</h2>
 
-              <div>
-                <p>Subtotal</p>
-                <p className="resumo-preco">R$ 100,00</p>
-              </div>
-
-              <div>
-                <p>Adicionais</p>
-                <p className="resumo-preco">R$ 50,00</p>
-              </div>
+            
 
               <div className="valores">
                 <p>Total</p>
-                <p className="resumo-preco">R$ 150,00</p>
+
+               
+                <p className="resumo-preco">{total.toLocaleString("pt-Br",{
+                  style:"currency",
+                  currency:"BRL"
+                })}</p>
               </div>
-            </div>
+            </div>)}
           </section>
 
           <footer className="footer-pedido">
