@@ -275,7 +275,48 @@
 
   cursor: pointer;
 }
+.popup-pedido-enviado {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
+  width: min(85%, 360px);
+
+  padding: 2rem 1.5rem;
+
+  background: var(--color-bg-card) ;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-primary);
+
+  box-shadow: var(--shadow-sm);
+
+  text-align: center;
+
+  z-index: 100000;
+
+  animation: aparecerPopup 0.25s ease;
+}
+
+.popup-pedido-enviado h1 {
+  margin: 0;
+
+  color: var(--color-primary);
+
+  font-size: var(--fs-lg);
+}
+
+@keyframes aparecerPopup {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
 /* ===== Tablet ===== */
 
 @media (min-width: 768px) {
@@ -283,3 +324,4 @@
     max-width: 650px;
   }
 }
+

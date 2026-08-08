@@ -1,8 +1,7 @@
-import { FiArrowLeft } from "react-icons/fi";
-import "./Pedidos.css";
-import { useState } from "react";
 import { addDoc, collection } from "firebase/firestore";
+import { FiArrowLeft } from "react-icons/fi";
 import { db } from "../Layout/Services/Firebase";
+import "./Pedidos.css";
 interface Produto {
   id: string;
   nome: string;
@@ -26,6 +25,8 @@ interface PedidosProps {
   limparSacola:()=> void;
  calcularPreco:(item:ItemSacola)=> number;
  alterarObservacao:(produtoId:string , observacao:string)=> void
+ popUpPedidoEnviado:()=> void
+ popUp: boolean
 }
  interface Pedidos{
 itens: ItemSacola[]
@@ -42,7 +43,9 @@ function Pedidos({
   removerPedido,
   limparSacola,
  calcularPreco,
- alterarObservacao
+ alterarObservacao,
+ popUpPedidoEnviado,
+ popUp
 }: PedidosProps) {
 
 
@@ -65,8 +68,17 @@ async function enviarPedidos() {
   console.log(resposta)
 }
 
+ 
   return (
     <>
+  {popUp&&
+   <div className="popup-pedido-enviado">
+      <h1>Pedido enviado!</h1>
+    </div>
+
+  
+  }   
+ 
       <div className="pedidos-overlay">
         <div className="pedidos">
           <header className="header-pedidos">
@@ -197,6 +209,7 @@ async function enviarPedidos() {
             <button className="btn-finalizar"
             onClick={()=>{
               enviarPedidos()
+              popUpPedidoEnviado()
             }}>Confirmar pedido</button>
           </footer>
         </div>

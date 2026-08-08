@@ -28,11 +28,13 @@ function Inicio() {
   const [textoInput, setTextoInput] = useState("");
   const [sacola, setSacola] = useState<ItemSacola[]>([]);
   const [sacolaAberta, setSacolaAberta] = useState(false);
+  const [popUp, setPopUp] = useState(false);
 
   async function buscarProdutos(): Promise<void> {
     const produtosRef = collection(db, "produtos");
 
     const resposta = await getDocs(produtosRef);
+ 
 
     const lista: Produto[] = resposta.docs.map((doc) => ({
       id: doc.id,
@@ -118,7 +120,16 @@ function Inicio() {
 
     setSacola(novaSacola);
   };
- 
+
+ const popUpPedidoEnviado = () => {
+   
+    setPopUp(true)
+       setTimeout(() => {
+   setPopUp(false)
+  }, 3000);
+  
+  };
+
 
   return (
     <>
@@ -132,6 +143,8 @@ function Inicio() {
           limparSacola={limparSacola}
           calcularPreco={calcularPreco}
           alterarObservacao={alterarObservacao}
+          popUpPedidoEnviado={popUpPedidoEnviado}
+          popUp={popUp}
         />
       )}
 
@@ -271,6 +284,7 @@ function Inicio() {
                     className="btn-add"
                     onClick={() => {
                       addASacola(produto);
+                      
                     }}
                   >
                     {" "}
