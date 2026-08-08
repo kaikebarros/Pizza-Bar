@@ -1,6 +1,8 @@
 import { FiArrowLeft } from "react-icons/fi";
 import "./Pedidos.css";
 import { useState } from "react";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../Layout/Services/Firebase";
 interface Produto {
   id: string;
   nome: string;
@@ -13,6 +15,7 @@ interface Produto {
 interface ItemSacola {
   produto: Produto;
   quantidade: number;
+  observacao:string;
 }
 interface PedidosProps {
   fecharSacola: () => void;
@@ -22,8 +25,15 @@ interface PedidosProps {
   removerPedido: (produto: Produto) => void;
   limparSacola:()=> void;
  calcularPreco:(item:ItemSacola)=> number;
+ alterarObservacao:(produtoId:string , observacao:string)=> void
 }
+ interface Pedidos{
+itens: ItemSacola[]
+total:number
 
+
+
+ }
 function Pedidos({
   fecharSacola,
   sacola,
@@ -31,15 +41,29 @@ function Pedidos({
   addASacola,
   removerPedido,
   limparSacola,
- calcularPreco
+ calcularPreco,
+ alterarObservacao
 }: PedidosProps) {
 
-const [inputObs, setInputObs] = useState("")
+
 
 const total = sacola.reduce((acumulador, item)=>{
   return acumulador + calcularPreco(item)
 }, 0)
 
+
+async function enviarPedidos() {
+    const pedido :Pedidos ={
+
+      itens:sacola,
+      total: total
+  }
+  const pedidosRef = collection(db, "pedidos" )
+  const resposta = await addDoc(pedidosRef, pedido)
+ 
+  
+  console.log(resposta)
+}
 
   return (
     <>
@@ -117,8 +141,9 @@ const total = sacola.reduce((acumulador, item)=>{
                     id="observacao"
                     placeholder="Ex: Sem cebola"
                     onChange={(evento)=>{
-                      setInputObs(evento.target.value)
-                    }}/>
+                       alterarObservacao(item.produto.id, evento.target.value )
+                     }}
+                    />
                     </div>
                  
                   </div>
@@ -169,7 +194,10 @@ const total = sacola.reduce((acumulador, item)=>{
           </section>
 
           <footer className="footer-pedido">
-            <button className="btn-finalizar">Confirmar pedido</button>
+            <button className="btn-finalizar"
+            onClick={()=>{
+              enviarPedidos()
+            }}>Confirmar pedido</button>
           </footer>
         </div>
       </div>

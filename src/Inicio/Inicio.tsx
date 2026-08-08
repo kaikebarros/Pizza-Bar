@@ -8,7 +8,6 @@ import "./Inicio.css";
 import Pedidos from "./Pedidos";
 
 function Inicio() {
-  
   interface Produto {
     id: string;
     nome: string;
@@ -21,6 +20,7 @@ function Inicio() {
   interface ItemSacola {
     produto: Produto;
     quantidade: number;
+    observacao: string;
   }
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [descricaoAberta, setDescricaoAberta] = useState<string | null>(null);
@@ -57,6 +57,7 @@ function Inicio() {
       novaSacola.push({
         produto: produto,
         quantidade: 1,
+        observacao: "",
       });
     }
 
@@ -104,6 +105,21 @@ function Inicio() {
     return subtotal;
   };
 
+  const alterarObservacao = (produtoId: string, observacao: string) => {
+    const novaSacola = sacola.map((item) => {
+      if (item.produto.id === produtoId)
+        return {
+          ...item,
+          observacao: observacao,
+        };
+
+      return item;
+    });
+
+    setSacola(novaSacola);
+  };
+ 
+
   return (
     <>
       {sacolaAberta && (
@@ -115,6 +131,7 @@ function Inicio() {
           removerPedido={removerPedido}
           limparSacola={limparSacola}
           calcularPreco={calcularPreco}
+          alterarObservacao={alterarObservacao}
         />
       )}
 
