@@ -6,6 +6,7 @@ import pizzaCardUm from "../assets/pizza-card-1.png";
 import { db } from "../Layout/Services/Firebase";
 import "./Inicio.css";
 import Pedidos from "./Pedidos";
+import { useSearchParams } from "react-router-dom";
 
 function Inicio() {
   interface Produto {
@@ -28,7 +29,23 @@ function Inicio() {
   const [textoInput, setTextoInput] = useState("");
   const [sacola, setSacola] = useState<ItemSacola[]>([]);
   const [sacolaAberta, setSacolaAberta] = useState(false);
-  const [popUp, setPopUp] = useState(false);
+  const [popUp, setPopUp] = useState(false)
+  const [searchParams] = useSearchParams()
+
+
+//lendo o numero da mesa
+  const valorMesa = searchParams.get("mesa")
+  if(valorMesa === null){
+    console.log("QR code inválido")
+    return
+  
+  }
+  console.log(valorMesa)
+
+
+
+
+
 
   async function buscarProdutos(): Promise<void> {
     const produtosRef = collection(db, "produtos");
@@ -145,6 +162,7 @@ function Inicio() {
           alterarObservacao={alterarObservacao}
           popUpPedidoEnviado={popUpPedidoEnviado}
           popUp={popUp}
+          valorMesa={valorMesa}
         />
       )}
 

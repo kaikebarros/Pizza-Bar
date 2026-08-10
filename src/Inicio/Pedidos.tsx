@@ -1,4 +1,5 @@
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import type { FieldValue } from "firebase/firestore/lite";
 import { FiArrowLeft } from "react-icons/fi";
 import { db } from "../Layout/Services/Firebase";
 import "./Pedidos.css";
@@ -14,7 +15,7 @@ interface Produto {
 interface ItemSacola {
   produto: Produto;
   quantidade: number;
-  observacao:string;
+  observacao: string;
 }
 interface PedidosProps {
   fecharSacola: () => void;
@@ -22,19 +23,26 @@ interface PedidosProps {
   diminuirQtd: (produto: Produto) => void;
   addASacola: (produto: Produto) => void;
   removerPedido: (produto: Produto) => void;
-  limparSacola:()=> void;
- calcularPreco:(item:ItemSacola)=> number;
- alterarObservacao:(produtoId:string , observacao:string)=> void
- popUpPedidoEnviado:()=> void
- popUp: boolean
+  limparSacola: () => void;
+  calcularPreco: (item: ItemSacola) => number;
+  alterarObservacao: (produtoId: string, observacao: string) => void;
+  popUpPedidoEnviado: () => void;
+  popUp: boolean;
+  valorMesa:string;
 }
- interface Pedidos{
-itens: ItemSacola[]
-total:number
+interface Pedidos {
+  itens: ItemSacola[];
+  total: number;
+  mesa:string;
+  criadoEm:FieldValue;
+}
 
-
-
- }
+// interface LerPedidos{
+//   itens: ItemSacola[];
+//   total: number;
+//   mesa:string;
+//   criadoEm:Timestamp
+// }
 function Pedidos({
   fecharSacola,
   sacola,
@@ -42,43 +50,38 @@ function Pedidos({
   addASacola,
   removerPedido,
   limparSacola,
- calcularPreco,
- alterarObservacao,
- popUpPedidoEnviado,
- popUp
+  calcularPreco,
+  alterarObservacao,
+  popUpPedidoEnviado,
+  popUp,
+  valorMesa
 }: PedidosProps) {
+  const total = sacola.reduce((acumulador, item) => {
+    return acumulador + calcularPreco(item);
+  }, 0);
 
+  async function enviarPedidos() {
+    const pedido: Pedidos = {
+      itens: sacola,
+      total: total,
+      mesa: valorMesa,
+      criadoEm: serverTimestamp()
+    };
+    const pedidosRef = collection(db, "pedidos");
+    const resposta = await addDoc(pedidosRef, pedido);
 
-
-const total = sacola.reduce((acumulador, item)=>{
-  return acumulador + calcularPreco(item)
-}, 0)
-
-
-async function enviarPedidos() {
-    const pedido :Pedidos ={
-
-      itens:sacola,
-      total: total
+    console.log(resposta);
   }
-  const pedidosRef = collection(db, "pedidos" )
-  const resposta = await addDoc(pedidosRef, pedido)
- 
-  
-  console.log(resposta)
-}
 
- 
+
   return (
     <>
-  {popUp&&
-   <div className="popup-pedido-enviado">
-      <h1>Pedido enviado!</h1>
-    </div>
+      {popUp && (
+        <div className="popup-pedido-enviado">
+          <h1>Pedido enviado!</h1>
+        </div>
+      )}
 
-  
-  }   
- 
       <div className="pedidos-overlay">
         <div className="pedidos">
           <header className="header-pedidos">
@@ -88,129 +91,125 @@ async function enviarPedidos() {
 
             <h1>Sacola</h1>
 
-            <button className="btn-limpar"
-            onClick={
-              limparSacola
-            }
-            >Limpar</button>
+            <button className="btn-limpar" onClick={limparSacola}>
+              Limpar
+            </button>
           </header>
 
           <section>
-           {sacola.length  >=1 && (<h2>Itens adicionados</h2>)}
+            {sacola.length >= 1 && <h2>Itens adicionados</h2>}
 
-           
-            
-         
-            {sacola
-            
-            
-            
-            
-            .map((item) => {
-              const subtotal = calcularPreco(item)
-              return(
-              <div className="itens" key={item.produto.id}>
-                <div className="item">
-                  <img src="https://placehold.co/100x100" alt="Pizza" />
+            {sacola.map((item) => {
+              const subtotal = calcularPreco(item);
+              return (
+                <div className="itens" key={item.produto.id}>
+                  <div className="item">
+                    <img src="https://placehold.co/100x100" alt="Pizza" />
 
-                  <div className="info">
-                    <h3>{item.produto.nome}</h3>
+                    <div className="info">
+                      <h3>{item.produto.nome}</h3>
 
-                    <p>{item.produto.descricao}</p>
+                      <p>{item.produto.descricao}</p>
 
-                    <span className="preco">{subtotal.toLocaleString("pt-Br",{
-                  style:"currency",
-                  currency:"BRL"
-                })}</span>
+                      <span className="preco">
+                        {subtotal.toLocaleString("pt-Br", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </span>
 
-                    <div className="add-remover">
-                      <button
-                        onClick={() => {
-                          removerPedido(item.produto);
-                        }}
-                      >
-                        🗑️
-                      </button>
+                      <div className="add-remover">
+                        <button
+                          onClick={() => {
+                            removerPedido(item.produto);
+                          }}
+                        >
+                          🗑️
+                        </button>
 
-                      <p className="qtd">{item.quantidade}</p>
+                        <p className="qtd">{item.quantidade}</p>
 
-                      <button
-                        onClick={() => {
-                          addASacola(item.produto);
-                        }}
-                      >
-                        +
-                      </button>
-                      <button
-                        onClick={() => {
-                          diminuirQtd(item.produto);
-                        }}
-                      >
-                        -
-                      </button>
-                         <label htmlFor="observacao">Observação</label>
-                    <input type="text" 
-                    id="observacao"
-                    placeholder="Ex: Sem cebola"
-                    onChange={(evento)=>{
-                       alterarObservacao(item.produto.id, evento.target.value )
-                     }}
-                    />
+                        <button
+                          onClick={() => {
+                            addASacola(item.produto);
+                          }}
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => {
+                            diminuirQtd(item.produto);
+                          }}
+                        >
+                          -
+                        </button>
+                        <label htmlFor="observacao">Observação</label>
+                        <input
+                          type="text"
+                          id="observacao"
+                          placeholder="Ex: Sem cebola"
+                          onChange={(evento) => {
+                            alterarObservacao(
+                              item.produto.id,
+                              evento.target.value,
+                            );
+                          }}
+                        />
+                      </div>
                     </div>
-                 
                   </div>
+
+                  <button
+                    className="mais-itens"
+                    onClick={() => {
+                      fecharSacola();
+                    }}
+                  >
+                    + Adicionar itens
+                  </button>
                 </div>
+              );
+            })}
 
-                <button className="mais-itens"
-                onClick={()=>{
-                  fecharSacola()
-                }}>+ Adicionar itens</button>
-              </div>
-              
-            )})}
-            
-          
             {sacola.length === 0 && (
-              <button className="mais-itens"
-              onClick={()=>{
-                  fecharSacola()
-
-              }}
+              <button
+                className="mais-itens"
+                onClick={() => {
+                  fecharSacola();
+                }}
               >
-
-              Adicionar itens
-
+                Adicionar itens
               </button>
+            )}
 
+            {sacola.length >= 1 && (
+              <div className="resumo-valores">
+                <h2>Resumo do pedido</h2>
 
-            ) }
+                <div className="valores">
+                  <p>Total</p>
 
-          
-
-           {sacola.length >=1 &&
-           ( <div className="resumo-valores">
-              <h2>Resumo do pedido</h2>
-
-            
-
-              <div className="valores">
-                <p>Total</p>
-
-               
-                <p className="resumo-preco">{total.toLocaleString("pt-Br",{
-                  style:"currency",
-                  currency:"BRL"
-                })}</p>
+                  <p className="resumo-preco">
+                    {total.toLocaleString("pt-Br", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </p>
+                </div>
               </div>
-            </div>)}
+            )}
           </section>
 
           <footer className="footer-pedido">
-            <button className="btn-finalizar"
-            onClick={()=>{
-              enviarPedidos()
-              popUpPedidoEnviado()
-            }}>Confirmar pedido</button>
+            <button
+              className="btn-finalizar"
+              onClick={() => {
+                enviarPedidos();
+                popUpPedidoEnviado();
+              }}
+            >
+              Confirmar pedido
+            </button>
           </footer>
         </div>
       </div>

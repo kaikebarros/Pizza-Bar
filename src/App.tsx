@@ -1,15 +1,14 @@
-import Layout from "./Layout/Layout"
-
+import { BrowserRouter } from "react-router-dom";
+import Layout from "./Layout/Layout";
 
 function App() {
-
-
   return (
-    <>
-    <Layout/>
     
-    </>
-  )
+      <BrowserRouter>
+        <Layout/>
+      </BrowserRouter>
+    
+  );
 }
 
-export default App
+export default App;
