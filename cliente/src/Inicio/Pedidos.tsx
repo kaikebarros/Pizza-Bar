@@ -104,7 +104,7 @@ function Pedidos({
               return (
                 <div className="itens" key={item.produto.id}>
                   <div className="item">
-                    <img src="https://placehold.co/100x100" alt="Pizza" />
+                    <img src={item.produto.imagem} alt="Produto pizzaria" />
 
                     <div className="info">
                       <h3>{item.produto.nome}</h3>

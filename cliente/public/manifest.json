@@ -1,0 +1,19 @@
+{
+  "name": "Pizzaria",
+  "short_name": "Pizzaria",
+  "description": "Cardápio digital para pedidos na mesa.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ee7623",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/Pizza Bar.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

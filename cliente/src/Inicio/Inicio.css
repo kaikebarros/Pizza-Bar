@@ -95,7 +95,17 @@
   border-radius: var(--radius-lg);
 
   box-shadow: var(--shadow-card);
+  animation: banner 1.2s ease;
 }
+@keyframes banner {
+  from{  opacity:0} 
+   to{ opacity: 1;}
+  
+  
+}
+
+
+
 
 .card img {
   width: 100%;
@@ -121,6 +131,8 @@
 
   z-index: 1;
 }
+
+
 
 .conteudo-card {
   position: absolute;

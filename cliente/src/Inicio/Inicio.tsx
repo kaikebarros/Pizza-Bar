@@ -2,11 +2,10 @@ import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FiPlus, FiSearch, FiShoppingBag } from "react-icons/fi";
 import { LuCakeSlice, LuCupSoda, LuPackage, LuPizza } from "react-icons/lu";
-import pizzaCardUm from "../assets/pizza-card-1.png";
+import { useSearchParams } from "react-router-dom";
 import { db } from "../Layout/Services/Firebase";
 import "./Inicio.css";
 import Pedidos from "./Pedidos";
-import { useSearchParams } from "react-router-dom";
 
 function Inicio() {
   interface Produto {
@@ -29,29 +28,22 @@ function Inicio() {
   const [textoInput, setTextoInput] = useState("");
   const [sacola, setSacola] = useState<ItemSacola[]>([]);
   const [sacolaAberta, setSacolaAberta] = useState(false);
-  const [popUp, setPopUp] = useState(false)
-  const [searchParams] = useSearchParams()
+  const [popUp, setPopUp] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [indiceCarrossel, setIndiceCarrossel] = useState(0);
 
-
-//lendo o numero da mesa
-  const valorMesa = searchParams.get("mesa")
-  if(valorMesa === null){
-    console.log("QR code inválido")
-    return
-  
+  //lendo o numero da mesa
+  const valorMesa = searchParams.get("mesa");
+  if (valorMesa === null) {
+    console.log("QR code inválido");
+    return;
   }
-  console.log(valorMesa)
-
-
-
-
-
+  console.log(valorMesa);
 
   async function buscarProdutos(): Promise<void> {
     const produtosRef = collection(db, "produtos");
 
     const resposta = await getDocs(produtosRef);
- 
 
     const lista: Produto[] = resposta.docs.map((doc) => ({
       id: doc.id,
@@ -138,16 +130,54 @@ function Inicio() {
     setSacola(novaSacola);
   };
 
- const popUpPedidoEnviado = () => {
-   
-    setPopUp(true)
-       setTimeout(() => {
-   setPopUp(false)
-  }, 3000);
-  
+  const popUpPedidoEnviado = () => {
+    setPopUp(true);
+    setTimeout(() => {
+      setPopUp(false);
+    }, 3000);
   };
 
+  const arrayCarrossel = [
+    {
+      nome: "Pizza",
+      imagem: "/pizza-calabresa.webp",
+      descricao: "Bastante Calabresa",
+      titulo: "QUENTE E PRONTO",
+    },
 
+    {
+      nome: "Combos",
+      imagem: "/combo-familia.webp",
+      descricao: "Atende sua família inteira",
+      titulo: "COMBO PERFEITO",
+    },
+    {
+      nome: "Sobremesa",
+      imagem: "/petit-gateau.webp",
+      descricao: "Doce final",
+      titulo: "SOBREMESA GELADA",
+    },
+    {
+      nome: "Bebidas",
+      imagem: "/refrigerante.webp",
+      descricao: "Bebidas com e sem álcool",
+      titulo: "OPCÕES GELADAS",
+    },
+  ];
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setIndiceCarrossel((indiceAnterior) => {
+        if (indiceAnterior === arrayCarrossel.length - 1) {
+          return 0;
+        } else {
+          return indiceAnterior + 1;
+        }
+      });
+    }, 3000);
+
+    return () => clearInterval(intervalo);
+  }, []);
   return (
     <>
       {sacolaAberta && (
@@ -181,16 +211,22 @@ function Inicio() {
 
           <FiSearch />
         </div>
-        <div className="card">
-          <img src={pizzaCardUm} alt="" />
+        <div className="card" key={indiceCarrossel}>
+          <img
+            src={arrayCarrossel[indiceCarrossel].imagem}
+            alt="imagem produto pizzaria"
+            loading="lazy"
+          />
 
           <div className="conteudo-card">
-            <h2>QUENTE E PRONTO</h2>
+            <h2>{arrayCarrossel[indiceCarrossel].titulo}</h2>
 
-            <h1>PIZZA</h1>
+            <h1>{arrayCarrossel[indiceCarrossel].nome}</h1>
 
-            <p>Large Pepperoni</p>
-            <button className="btn-cta">Peça agora →</button>
+            <p>{arrayCarrossel[indiceCarrossel].descricao}</p>
+            <a href="#produtos" className="btn-cta">
+              Peça agora
+            </a>
           </div>
         </div>
         <section>
@@ -257,7 +293,7 @@ function Inicio() {
         <h2 className="subtitulo">Pra você</h2>
 
         <section>
-          <div className="produtos">
+          <div className="produtos" id="produtos">
             {}
 
             {produtos
@@ -275,7 +311,11 @@ function Inicio() {
 
               .map((produto) => (
                 <div className="card-produto" key={produto.id}>
-                  <img src={pizzaCardUm} alt="" />
+                  <img
+                    src={produto.imagem}
+                    alt="Produto pizzaria"
+                    loading="lazy"
+                  />
 
                   <div className="conteudo-produto">
                     <h2>{produto.nome}</h2>
@@ -302,7 +342,6 @@ function Inicio() {
                     className="btn-add"
                     onClick={() => {
                       addASacola(produto);
-                      
                     }}
                   >
                     {" "}
