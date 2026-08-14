@@ -1,0 +1,348 @@
+.dashboard {
+  min-height: 100vh;
+  padding: var(--space-md);
+
+  background-color: var(--color-bg-app);
+  color: var(--color-text-primary);
+
+  font-family: var(--font-family-base);
+}
+
+.dashboard__content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header-dashboard {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto var(--space-lg);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-dashboard h1 {
+  margin: 0;
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-bold);
+}
+
+.header-dashboard p {
+  margin: var(--space-xs) 0 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-body);
+}
+
+/* =========================
+   RESUMO
+========================= */
+
+.resumo-dashboard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+}
+
+/* =========================
+   CARD RESUMO
+========================= */
+
+.card-resumo {
+  min-height: 120px;
+  padding: var(--space-md);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background-color: var(--color-bg-card);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-card);
+}
+
+.card-resumo span {
+  display: block;
+  margin-bottom: var(--space-sm);
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-body);
+}
+
+.card-resumo strong {
+  color: var(--color-text-primary);
+
+  font-size: 22px;
+  font-weight: var(--font-weight-bold);
+}
+
+/* =========================
+   GRÁFICO
+========================= */
+
+.grafico-vendas {
+  padding: var(--space-md);
+
+  background-color: var(--color-bg-card);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-card);
+}
+
+.grafico-vendas > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+
+  margin-bottom: var(--space-md);
+}
+
+.grafico-vendas h2 {
+  margin: 0;
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+}
+
+.grafico-vendas span {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-caption);
+}
+
+.grafico-vendas__area {
+  min-height: 250px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--color-bg-soft);
+
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+
+  color: var(--color-text-secondary);
+}
+
+/* =========================
+   PEDIDOS RECENTES
+========================= */
+
+.pedidos-recentes {
+  padding: var(--space-md);
+
+  background-color: var(--color-bg-card);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-card);
+}
+
+.pedidos-recentes > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: var(--space-md);
+}
+
+.pedidos-recentes h2 {
+  margin: 0;
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+}
+
+.pedidos-recentes button {
+  padding: var(--space-xs) var(--space-sm);
+
+  border: none;
+  border-radius: var(--radius-pill);
+
+  background-color: transparent;
+
+  color: var(--color-primary);
+
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+
+  cursor: pointer;
+}
+
+/* =========================
+   ITEM DO PEDIDO
+========================= */
+
+.pedido-item {
+  padding: var(--space-sm) 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pedido-item:last-child {
+  border-bottom: none;
+}
+
+.pedido-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.pedido-item strong {
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-bold);
+}
+
+.pedido-item span {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-caption);
+}
+
+/* =========================
+   STATUS DO PEDIDO
+========================= */
+
+.status-pedido {
+  width: fit-content;
+
+  padding: var(--space-xs) var(--space-sm);
+
+  border-radius: var(--radius-pill);
+
+  background-color: var(--color-bg-soft);
+
+  color: var(--color-primary) !important;
+
+  font-size: var(--font-size-caption) !important;
+  font-weight: var(--font-weight-medium);
+}
+
+/* =========================
+   PRODUTOS MAIS VENDIDOS
+========================= */
+
+.produtos-mais-vendidos {
+  padding: var(--space-md);
+
+  background-color: var(--color-bg-card);
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-card);
+}
+
+.produtos-mais-vendidos > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: var(--space-md);
+}
+
+.produtos-mais-vendidos h2 {
+  margin: 0;
+
+  color: var(--color-text-primary);
+
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-bold);
+}
+
+.produtos-mais-vendidos span {
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-caption);
+}
+
+.produtos-mais-vendidos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.produtos-mais-vendidos__lista p {
+  margin: 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: var(--font-size-body);
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (min-width: 600px) {
+  .dashboard {
+    padding: var(--space-lg);
+  }
+
+  .resumo-dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grafico-vendas,
+  .pedidos-recentes,
+  .produtos-mais-vendidos {
+    padding: var(--space-lg);
+  }
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 1024px) {
+  .dashboard {
+    padding: var(--space-xl);
+  }
+
+  .resumo-dashboard {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .dashboard__content {
+    gap: var(--space-lg);
+  }
+
+  .grafico-vendas__area {
+    min-height: 300px;
+  }
+}
