@@ -3,24 +3,30 @@ import { useEffect, useState } from "react";
 import { db } from "../../services/firebase";
 import PedidoItem from "./PedidoItem";
 
+interface Pedido {
+  id: string;
+  mesa: number;
+}
+
 function PedidosRecentes() {
-  const [pedidos, setPedidos] = useState([]);
-  async function buscarPedios() {
+  const [pedidos, setPedidos] = useState<Pedido[]>([]);
+
+  async function buscarPedidos() {
     const pedidosRef = collection(db, "pedidos");
     const resposta = await getDocs(pedidosRef);
 
-    const lista = resposta.docs.map((doc) => ({
+    const lista: Pedido[] = resposta.docs.map((doc) => ({
       id: doc.id,
-
       ...doc.data(),
-    }));
+    })) as Pedido[];
 
     setPedidos(lista);
   }
 
-  useEffect(()=>{
-    buscarPedios()
-  },[]);
+  useEffect(() => {
+    buscarPedidos();
+  }, []);
+
   return (
     <section className="pedidos-recentes">
       <div>
@@ -30,7 +36,7 @@ function PedidosRecentes() {
 
       <div>
         {pedidos.map((pedido) => (
-          <PedidoItem pedido={pedido} />
+          <PedidoItem key={pedido.id} pedido={pedido} />
         ))}
       </div>
     </section>

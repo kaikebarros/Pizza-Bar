@@ -1,22 +1,18 @@
 import StatusPedido from "./StatusPedido";
-interface Produto {
-    id: string;
-    nome: string;
-    preco: number;
-    categoria: string;
-    imagem: string;
-    descricao: string;
-    resumo: string;
-  }
-  
- 
 
+interface Pedido {
+  mesa: number;
+  // adicione aqui outros campos que seu pedido possui
+}
 
-function PedidoItem({pedido}) {
+interface PedidoItemProps {
+  pedido: Pedido;
+}
+
+function PedidoItem({ pedido }: PedidoItemProps) {
   return (
     <article className="pedido-item">
       <div>
-        
         <span>{pedido.mesa}</span>
       </div>
 
