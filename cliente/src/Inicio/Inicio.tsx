@@ -1,27 +1,17 @@
-import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FiPlus, FiSearch, FiShoppingBag } from "react-icons/fi";
 import { LuCakeSlice, LuCupSoda, LuPackage, LuPizza } from "react-icons/lu";
 import { useSearchParams } from "react-router-dom";
-import { db } from "../Layout/Services/Firebase";
+import type { ItemSacola, Produto } from "../types/types";
 import "./Inicio.css";
+
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../Layout/Services/Firebase";
 import Pedidos from "./Pedidos";
 
 function Inicio() {
-  interface Produto {
-    id: string;
-    nome: string;
-    preco: number;
-    categoria: string;
-    imagem: string;
-    descricao: string;
-    resumo: string;
-  }
-  interface ItemSacola {
-    produto: Produto;
-    quantidade: number;
-    observacao: string;
-  }
+  
+  
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [descricaoAberta, setDescricaoAberta] = useState<string | null>(null);
   const [categoriaSelecionada, setCategoriaSelecionada] = useState("todos");
@@ -39,6 +29,8 @@ function Inicio() {
     return;
   }
   console.log(valorMesa);
+
+  
 
   async function buscarProdutos(): Promise<void> {
     const produtosRef = collection(db, "produtos");
